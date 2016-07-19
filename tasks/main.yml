@@ -1,0 +1,33 @@
+#
+- name: locale - install
+  locale_gen:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "en_US.UTF-8"
+    - "ru_RU.UTF-8"
+
+- name: locale - set default
+  template:
+    src: "locale.j2"
+    dest: "/etc/default/locale"
+    owner: "root"
+    group: "root"
+    mode: 0644
+
+- name: locale - set localtime
+  file:
+    src: "/usr/share/zoneinfo/{{ timezone }}"
+    dest: "/etc/localtime"
+    owner: "root"
+    group: "root"
+    state: link
+    force: yes
+
+- name: locale - set timezone
+  template:
+    src: "timezone.j2"
+    dest: "/etc/timezone"
+    owner: "root"
+    group: "root"
+    mode: 0644
